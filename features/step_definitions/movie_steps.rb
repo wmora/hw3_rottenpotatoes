@@ -40,17 +40,15 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
 
 end
 
-When /I (un)?check all ratings/ do |uncheck|
+When /I check all ratings/ do
 
-  ratings = Movie.all_ratings
-  ratings.each do |rating|
-    field = "ratings_#{rating}"
-    if uncheck
-      uncheck(field)
-    else
-      check(field)
-    end
-  end
+  Movie.all_ratings.each { |rating| check("ratings_#{rating}")}
+
+end
+
+When /I uncheck all ratings/ do
+
+  Movie.all_ratings.each { |rating| uncheck("ratings_#{rating}")}
 
 end
 
@@ -64,13 +62,13 @@ Then /I should( not)? see movies with ratings: (.*)/ do |no, rating_list|
 
 end
 
-Then /I should not see any movies/ do
+Then /I should see movies from last filter/ do
 
-  assert_equal 0, page.all('table#movies tbody tr').count
+  assert page.all('table#movies tbody tr').count > 0
 
 end
 
-Then /I should see all movies/ do
+Then /I should see all of the movies/ do
 
   filtered_movies_count = page.all('table#movies tbody tr').count
   db_count = Movie.all.size
